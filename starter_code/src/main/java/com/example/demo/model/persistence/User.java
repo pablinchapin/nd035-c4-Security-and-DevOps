@@ -1,5 +1,6 @@
 package com.example.demo.model.persistence;
 
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,30 +22,26 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
-	private long id;
+	private Long id;
 	
 	@Column(nullable = false, unique = true)
 	@JsonProperty
 	private String username;
+
+	@Column(nullable = false)
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String password;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+	@JoinColumn(name = "cart_id", referencedColumnName = "id")
 	@JsonIgnore
-    private Cart cart;
-	
-	public Cart getCart() {
-		return cart;
-	}
+	private Cart cart;
 
-	public void setCart(Cart cart) {
-		this.cart = cart;
-	}
-
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -55,7 +52,20 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
-	
-	
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Cart getCart() {
+		return cart;
+	}
+
+	public void setCart(Cart cart) {
+		this.cart = cart;
+	}
 }

@@ -31,12 +31,12 @@ public class UserOrder {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JsonProperty
 	@Column
-    private List<Item> items;
+	private List<Item> items;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id", nullable = false, referencedColumnName = "id")
 	@JsonProperty
-    private User user;
+	private User user;
 	
 	@JsonProperty
 	@Column

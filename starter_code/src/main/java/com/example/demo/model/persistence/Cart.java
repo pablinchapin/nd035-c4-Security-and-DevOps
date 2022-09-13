@@ -31,11 +31,11 @@ public class Cart {
 	@ManyToMany
 	@JsonProperty
 	@Column
-    private List<Item> items;
+	private List<Item> items;
 	
 	@OneToOne(mappedBy = "cart")
 	@JsonProperty
-    private User user;
+	private User user;
 	
 	@Column
 	@JsonProperty
