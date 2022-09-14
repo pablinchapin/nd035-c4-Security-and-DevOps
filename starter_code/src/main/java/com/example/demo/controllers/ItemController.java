@@ -2,6 +2,8 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,25 +18,35 @@ import com.example.demo.model.persistence.repositories.ItemRepository;
 @RequestMapping("/api/item")
 public class ItemController {
 
+	private final ItemRepository itemRepository;
+	private final Logger logger;
+
 	@Autowired
-	private ItemRepository itemRepository;
-	
+	public ItemController(ItemRepository itemRepository, Logger logger) {
+		this.itemRepository = itemRepository;
+		this.logger = logger;
+	}
+
 	@GetMapping
 	public ResponseEntity<List<Item>> getItems() {
+		logger.info("Retrieving all item list");
 		return ResponseEntity.ok(itemRepository.findAll());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Item> getItemById(@PathVariable Long id) {
+		logger.info("Retrieving item by id {}", id);
 		return ResponseEntity.of(itemRepository.findById(id));
 	}
 	
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Item>> getItemsByName(@PathVariable String name) {
+		logger.info("Retrieving items by name {}", name);
 		List<Item> items = itemRepository.findByName(name);
-		return items == null || items.isEmpty() ? ResponseEntity.notFound().build()
-				: ResponseEntity.ok(items);
-			
+
+		return items == null || items.isEmpty() ?
+				ResponseEntity.notFound().build() :
+				ResponseEntity.ok(items);
 	}
 	
 }
