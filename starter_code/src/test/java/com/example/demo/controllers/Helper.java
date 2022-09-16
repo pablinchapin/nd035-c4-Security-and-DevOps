@@ -1,10 +1,14 @@
 package com.example.demo.controllers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.example.demo.model.persistence.Cart;
 import com.example.demo.model.persistence.Item;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.requests.CreateUserRequest;
 import java.math.BigDecimal;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 public class Helper {
 
@@ -49,6 +53,17 @@ public class Helper {
 
     user.setCart(cart);
     return cart;
+  }
+
+  public static void dataNotFoundAssertions(ResponseEntity<?> responseEntity){
+    assertThat(responseEntity).isNotNull();
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    assertThat(responseEntity.getBody()).isNull();
+  }
+
+  public static void dataFoundAssertions(ResponseEntity<?> responseEntity){
+    assertThat(responseEntity).isNotNull();
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
 
 }

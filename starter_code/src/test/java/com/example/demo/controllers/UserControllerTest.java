@@ -47,17 +47,11 @@ public class UserControllerTest {
   }
 
   private void dataFoundAssertions(ResponseEntity<?> responseEntity, User expected){
-    assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    Helper.dataFoundAssertions(responseEntity);
     User user  = (User) responseEntity.getBody();
     assertThat(user).isNotNull();
     assertThat(user.getId()).isEqualTo(expected.getId());
     assertThat(user.getUsername()).isEqualTo(expected.getUsername());
-  }
-
-  private void dataNotFoundAssertions(ResponseEntity<?> responseEntity){
-    assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test
@@ -70,8 +64,7 @@ public class UserControllerTest {
 
     final ResponseEntity<?> responseEntity = userController.createUser(userRequest);
 
-    assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    Helper.dataFoundAssertions(responseEntity);
     User user = (User) responseEntity.getBody();
     assertThat(user).isNotNull();
     assertThat(user.getUsername()).isEqualTo(cart.getUser().getUsername());
@@ -105,7 +98,7 @@ public class UserControllerTest {
     when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
     final ResponseEntity<?> responseEntity = userController.findById(anyLong());
 
-    dataNotFoundAssertions(responseEntity);
+    Helper.dataNotFoundAssertions(responseEntity);
   }
 
   @Test
@@ -123,7 +116,7 @@ public class UserControllerTest {
 
     final ResponseEntity<?> responseEntity = userController.findByUserName(anyString());
 
-    dataNotFoundAssertions(responseEntity);
+    Helper.dataNotFoundAssertions(responseEntity);
   }
 
 }

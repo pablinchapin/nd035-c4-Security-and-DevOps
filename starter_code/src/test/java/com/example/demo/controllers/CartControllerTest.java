@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest
@@ -53,9 +52,8 @@ public class CartControllerTest {
     return modifyCartRequest;
   }
 
-  private void noErrorsAssertions(ResponseEntity<?> responseEntity, Cart expected){
-    assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+  private void dataFoundAssertions(ResponseEntity<?> responseEntity, Cart expected){
+    Helper.dataFoundAssertions(responseEntity);
 
     Cart cart = (Cart) responseEntity.getBody();
 
@@ -63,10 +61,7 @@ public class CartControllerTest {
     assertThat(expected.getItems().size()).isEqualTo(cart.getItems().size());
   }
 
-  private void dataNotFoundAssertions(ResponseEntity<?> responseEntity){
-    assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-  }
+
 
   @Test
   public void addToCart(){
@@ -80,7 +75,7 @@ public class CartControllerTest {
 
     ResponseEntity<?> responseEntity = cartController.addToCart(modifyCartRequest());
 
-    noErrorsAssertions(responseEntity, expected);
+    dataFoundAssertions(responseEntity, expected);
   }
 
   @Test
@@ -90,7 +85,7 @@ public class CartControllerTest {
 
     ResponseEntity<?> responseEntity = cartController.addToCart(modifyCartRequest());
 
-    dataNotFoundAssertions(responseEntity);
+    Helper.dataNotFoundAssertions(responseEntity);
   }
 
   @Test
@@ -105,7 +100,7 @@ public class CartControllerTest {
 
     ResponseEntity<?> responseEntity = cartController.addToCart(modifyCartRequest());
 
-    dataNotFoundAssertions(responseEntity);
+    Helper.dataNotFoundAssertions(responseEntity);
   }
 
   @Test
@@ -120,7 +115,7 @@ public class CartControllerTest {
 
     ResponseEntity<?> responseEntity = cartController.removeFromCart(modifyCartRequest());
 
-    noErrorsAssertions(responseEntity, expected);
+    dataFoundAssertions(responseEntity, expected);
 
   }
 
@@ -131,7 +126,7 @@ public class CartControllerTest {
 
     ResponseEntity<?> responseEntity = cartController.removeFromCart(modifyCartRequest());
 
-    dataNotFoundAssertions(responseEntity);
+    Helper.dataNotFoundAssertions(responseEntity);
   }
 
   @Test
@@ -146,7 +141,7 @@ public class CartControllerTest {
 
     ResponseEntity<?> responseEntity = cartController.removeFromCart(modifyCartRequest());
 
-    dataNotFoundAssertions(responseEntity);
+    Helper.dataNotFoundAssertions(responseEntity);
   }
 
 }

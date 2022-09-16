@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest
@@ -48,23 +47,12 @@ public class ItemControllerTest {
     );
   }
 
-  private void dataFoundAssertions(ResponseEntity<?> responseEntity){
-    assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-  }
-
-  private void dataNotFoundAssertions(ResponseEntity<?> responseEntity){
-    assertThat(responseEntity).isNotNull();
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    assertThat(responseEntity.getBody()).isNull();
-  }
-
   @Test
   public void getItems(){
     when(itemRepository.findAll()).thenReturn(generateItemList());
     final ResponseEntity<List<Item>> responseEntity = itemController.getItems();
 
-    dataFoundAssertions(responseEntity);
+    Helper.dataFoundAssertions(responseEntity);
 
     assertThat(responseEntity.getBody()).isNotNull().size().isEqualTo(generateItemList().size());
   }
@@ -74,7 +62,7 @@ public class ItemControllerTest {
     when(itemRepository.findAll()).thenReturn(Collections.emptyList());
     final ResponseEntity<List<Item>> responseEntity = itemController.getItems();
 
-    dataFoundAssertions(responseEntity);
+    Helper.dataFoundAssertions(responseEntity);
 
     assertThat(responseEntity.getBody()).isEmpty();
   }
@@ -85,7 +73,7 @@ public class ItemControllerTest {
     when(itemRepository.findById(anyLong())).thenReturn(Optional.of(expected));
     final ResponseEntity<?> responseEntity = itemController.getItemById(expected.getId());
 
-    dataFoundAssertions(responseEntity);
+    Helper.dataFoundAssertions(responseEntity);
 
     Item item = (Item) responseEntity.getBody();
     assertThat(item).isNotNull();
@@ -99,7 +87,7 @@ public class ItemControllerTest {
     final ResponseEntity<?> responseEntity;
     responseEntity = itemController.getItemById(expected.getId());
 
-    dataNotFoundAssertions(responseEntity);
+    Helper.dataNotFoundAssertions(responseEntity);
   }
 
   @Test
@@ -108,7 +96,7 @@ public class ItemControllerTest {
     when(itemRepository.findByName(expected.getName())).thenReturn(Arrays.asList(expected));
     final ResponseEntity<?> responseEntity = itemController.getItemsByName(expected.getName());
 
-    dataFoundAssertions(responseEntity);
+    Helper.dataFoundAssertions(responseEntity);
 
     assertThat(responseEntity.getBody()).isNotNull().asList().size().isEqualTo(1);
   }
@@ -120,7 +108,7 @@ public class ItemControllerTest {
     final ResponseEntity<?> responseEntity;
     responseEntity = itemController.getItemsByName(expected.getName());
 
-    dataNotFoundAssertions(responseEntity);
+    Helper.dataNotFoundAssertions(responseEntity);
   }
 
 }
