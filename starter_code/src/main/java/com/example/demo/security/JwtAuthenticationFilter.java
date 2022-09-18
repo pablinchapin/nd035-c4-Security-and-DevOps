@@ -2,35 +2,24 @@ package com.example.demo.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.demo.config.AppConstantValues;
 import com.example.demo.model.persistence.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Date;
+
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private final AuthenticationManager authenticationManager;
-
-  @Value("${application.values.header}")
-  private String header;
-
-  @Value("${application.values.header.prefix}")
-  private String prefix;
-
-  @Value("${application.values.secret}")
-  private String secret;
-
 
   public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
     this.authenticationManager = authenticationManager;
@@ -56,10 +45,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       FilterChain chain, Authentication authResult) {
 
     String token = JWT.create()
-      .withSubject(((User) authResult.getPrincipal()).getUsername())
+      .withSubject(((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername())
       .withExpiresAt(new Date(System.currentTimeMillis() + 864_000_000))
-      .sign(Algorithm.HMAC512(secret));
+      .sign(Algorithm.HMAC512(AppConstantValues.SECRET.getBytes()));
 
-    response.addHeader(header, new StringBuilder(prefix).append(" ").append(token).toString());
+    response.addHeader(AppConstantValues.HEADER, new StringBuilder(AppConstantValues.PREFIX).append(" ").append(token).toString());
   }
 }
